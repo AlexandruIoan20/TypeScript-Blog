@@ -1,0 +1,1 @@
+https://coolors.co/palette/421869-491a74-721cb8-995bd5-bf99f2-9cf945-8edf34-80c423-509724-1f6924 - color pallette
