@@ -1,10 +1,43 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 * { 
   padding: 0; 
   margin: 0; 
-  box-sizing: border-box; 
-}; 
+  box-sizing: border-box;     
+}
 
+@tailwind base; 
+@tailwind utilities; 
+@tailwind components; 
+
+@layer components { 
+  .log-button { 
+      @apply bg-light-purple px-2 py-1 rounded-xl mx-2 font-satoshi transition-all duration-300
+          hover:bg-light-green hover:text-dark-purple hover:cursor-pointer hover:rounded-2xl hover:text-sm
+  }
+
+  .sign-button { 
+      @apply bg-normal-purple px-2 py-1 rounded-xl mx-2 text-white font-satoshi transition-all duration-300
+          hover:bg-light-green hover:text-dark-purple hover:cursor-pointer hover:rounded-2xl hover:text-sm
+  }
+
+  .global_header { 
+      @apply font-satoshi text-5xl font-bold text-dark-purple mx-4 my-4
+  }
+
+  .default_button { 
+      @apply font-satoshi text-sm bg-dark-purple text-white px-2 py-1 mx-2 rounded-xl transition-all duration-300
+          hover:rounded-3xl 
+  }
+
+  .form_input { 
+      @apply rounded-xl mx-4 px-4 py-1 outline-none font-satoshi
+  }
+
+  .input_label { 
+      @apply flex flex-col my-2
+  }
+
+  .submit_button { 
+      @apply bg-slate-300 py-1 px-2 rounded-xl font-inter transition-all duration-300 
+          hover:bg-slate-500 hover:text-white hover:rounded-3xl hover:text-base hover:font-semibold
+  }
+}
