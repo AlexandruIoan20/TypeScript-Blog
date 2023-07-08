@@ -7,3 +7,4 @@ export interface Comment extends Document {
     creator: Schema.Types.ObjectId | User, 
     post: Schema.Types.ObjectId | Post, 
 }; 
+

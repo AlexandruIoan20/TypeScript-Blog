@@ -7,11 +7,27 @@ import Image from "next/image";
 import { useState, useEffect } from 'react'; 
 import { signIn, signOut, useSession, getProviders } from 'next-auth/react'; 
 import { Session } from 'next-auth';
+import { User as UserInterface } from '@/models/interfaces/User';
+import Login from './Login';
+
+interface UserSession extends Session {  
+    user: UserInterface, 
+}
 
 interface AuthButtonProps { 
     classes: string, 
     executeFunction: () => void, 
     name: string, 
+}
+
+interface GoogleProvider {
+    id: string;
+    name: string;
+    type: string;
+    callbackUrl: string;
+    clientId: string;
+    clientSecret: string;
+    // ... Add other Google provider-specific properties
 }
 
 const AuthButton = ({ executeFunction, classes, name }: AuthButtonProps) => { 
@@ -35,12 +51,26 @@ const CustomFaBlogger: React.FC = () => {
 
 
 const NavBar = () => {
-    const { data: session } = useSession();
+    const { data: session }: { data: UserSession | null | any } = useSession();
+    const [ providers, setProviders ] = useState <GoogleProvider[]>([]); 
+
+    useEffect( () => { 
+        const setGlobalProviders = async () => { 
+            console.log ("Hello")
+            const response = await getProviders(); 
+            console.log(response); 
+            setProviders([]);
+        }; 
+
+        setGlobalProviders();
+    }, []); 
   return  (
     <nav className = 'bg-primary-purple py-1 px-1 flex flex-row w-screen'>
         <Link href = "/">
             <CustomFaBlogger /> 
         </Link>
+
+        <Login /> 
 
         {/* PC Design */}
         <div className = "ml-auto sm:flex hidden"> 
