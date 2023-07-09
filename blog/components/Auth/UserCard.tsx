@@ -4,8 +4,6 @@ import AuthButton from '../buttons/AuthButton';
 import Link from 'next/link';
 import Image from 'next/image';
 import { signOut } from 'next-auth/react';
-import { User  } from "../../models/interfaces/User"; 
-
 
 const UserCard = ({ user }: { user: DefaultSession["user"] | any }) => {
   useEffect( () => { console.log(user)}, [])

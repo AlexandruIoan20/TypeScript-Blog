@@ -4,9 +4,7 @@ import { FaBlogger } from 'react-icons/fa';
 import { IconContext } from 'react-icons';
 import Link from "next/link"; 
 import { useState, useEffect } from 'react'; 
-import { signIn, signOut, useSession, getProviders } from 'next-auth/react'; 
-import { Session } from 'next-auth';
-import { User as UserInterface } from '@/models/interfaces/User';
+import { signIn, useSession, getProviders } from 'next-auth/react'; 
 import Login from './Auth/Login';
 import AuthButton from './buttons/AuthButton';
 
@@ -65,11 +63,6 @@ const NavBar = () => {
                 </div>
             )
         }
-
-    
-                
-
-        {/* PC Design */}
     </nav>
 )
 }
