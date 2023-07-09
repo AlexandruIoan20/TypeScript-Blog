@@ -1,13 +1,15 @@
 
 'use client'; 
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { initialUser, User } from '@/models/interfaces/User';
 import { Post } from '@/models/interfaces/Post';
 import GradesList from './Grade';
 import Alert from './Alert';
 import PostCard from './PostCard';
 import { initialPost } from '@/models/interfaces/Post';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/app/GlobalRedux/store';
 
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -54,9 +56,14 @@ const BUTTON_GENERAL_CLASSNAME: string =  `mx-5 text-base font-satoshi bg-light-
   }; 
 
 const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile, grades}: Props) => {
+  const posts = useSelector((state: RootState) => state.posts); 
   const { data: session } = useSession(); 
 
   const [ showStats, setShowStats ] = useState<boolean>(false); 
+
+  useEffect( () => { 
+    console.log(posts); 
+  }, []); 
 
   const handleShowStats = () => { 
     setShowStats((x) => !x); 

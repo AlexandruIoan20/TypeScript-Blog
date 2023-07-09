@@ -1,5 +1,5 @@
-import { connectToDB } from "@utils/database";
-import Post from "@models/post";
+import { connectToDB } from '../../../../utils/database'; 
+import Post from '../../../../models/post'
 
 export const GET = async (req, res) => { 
     try { 

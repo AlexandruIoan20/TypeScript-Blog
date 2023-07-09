@@ -1,6 +1,6 @@
-import { connectToDB } from "@utils/database";
-import Post from "@models/post";
-import User from "@models/user";
+import { connectToDB } from '../../../../utils/database';
+import Post from '../../../../models/post'
+import User from '../../../../models/user'
 
 export const DELETE = async(req, { params }) => { 
     try { 
@@ -26,6 +26,7 @@ export const GET = async(req, { params }) => {
         console.log(post); 
         return new Response(JSON.stringify(post), { status: 200 }); 
     } catch(err) { 
+        console.log('jJHello'); 
         console.log(err); 
         return new Response('Cannot find the post', { status: 404 }); 
     }
