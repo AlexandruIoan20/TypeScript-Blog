@@ -3,30 +3,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Post as PostInterface } from "@/models/interfaces/Post";
 
-const initialState: Partial<PostInterface> = { 
-    title: "", 
-    text: "", 
-    creator: "", 
-    visibility: "", 
-    interaction: { 
-        likes: 0, 
-        likeUsers: [], 
-        comments: [], 
-    }
-}
+const initialState: Partial<PostInterface> [] = []; 
 
-export const postSlice = createSlice({ 
-    name: "post", 
+const postsSlice = createSlice({ 
+    name: "posts", 
     initialState, 
     reducers: { 
-        likePost: (state, action) => { if(state.interaction != undefined) 
-            state.interaction.likes += 1},
-        leaveComment: (state, action) => { 
-            if(state.interaction != undefined) 
-                state.interaction.likes -= 1; 
+        addPost: (state, action) => { 
+            state.push(action.payload); 
         }
-    }
-})
+    }  
+}); 
 
-export const { likePost, leaveComment } = postSlice.actions; 
-export default postSlice.reducer; 
+export const { addPost } = postsSlice.actions; 
+export default postsSlice.reducer;

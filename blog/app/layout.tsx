@@ -2,8 +2,8 @@ import '../styles/globals.css';
 import type { Metadata } from 'next'; 
 import Providers from './GlobalRedux/provider';
 import NavBar from '@/components/NavBar';
-import Feed from '@/components/Feed';
 import Provider from '@/components/Provider';
+import Feed from '@/components/Feed';
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -20,8 +20,10 @@ export default function RootLayout({
       <body>
         <Provider>
           <Providers>
-              <NavBar /> 
-              { children }
+                <>
+                  <NavBar /> 
+                  { children }  
+                </>
           </Providers>
         </Provider>
       </body>

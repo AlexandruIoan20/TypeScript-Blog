@@ -1,8 +1,13 @@
-import React from 'react'
+'use client'; 
+
+import React from 'react'; 
+import type { RootState } from '@/app/GlobalRedux/store';
+import { useSelector } from 'react-redux';
 
 const Feed = () => {
+  const posts = useSelector((state: RootState) => state.posts); 
   return (
-    <div>Feed</div>
+    <p>re</p>
   )
 }
 
