@@ -17,21 +17,24 @@ interface Props {
 
 const PostCard = ({ onDeletePost, onEditPost, dev, post }: Props ) => {
   const { data: session } = useSession(); 
-  const pathName = usePathname (); 
-  const router = useRouter (); 
+  const pathName = usePathname ();
 
   return (
     <div className='mb-4'>
       <section className='bg-slate-200 px-6 pb-2 pt-2 mx-4 mt-2 rounded-2xl shadow-lg'>
         <article className='flex'>
           <div>
-            <h2 className='text-2xl font-inter'>{ post.title } </h2>
-            {/*             <p className='text-xs font-satoshi'> 
-              { post.creator?.username != undefined && `@${ post.creator?.username }`}
-            </p>*/ }
+            { !dev && pathName != `/users/${session?.user?.id}` && 
+                <h2 className='text-2xl font-inter'>{ post.title } </h2>
+            }
+            { post.creator?.username != undefined && `@${ post.creator?.username }`}
+
+            { dev && pathName ==  `/users/${session?.user?.id}` && 
+              <h2 className='text-2xl font-inter'>{ post.title } - { post.visibility } </h2>
+            }
           </div>
           <div className='flex justify-end ml-auto'>
-            <Link href = { `/posts/${post._id}` } className='default_button'> View Post</Link>
+            <Link href = { `/posts/${post._id}` } className='default_button'> View Post </Link>
           </div>
         </article>
         <article>

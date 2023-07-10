@@ -15,8 +15,13 @@ const postsSlice = createSlice({
         getFeedData: (state, action) => { 
             return action.payload
         }, 
+        deletePost: (state, action) => { 
+            state.filter(post => post._id?.toString() != action.payload); 
+            console.log('Globally deleted'); 
+            console.log(state); 
+        }
     }  
 }); 
 
-export const { addPost, getFeedData } = postsSlice.actions; 
+export const { addPost, getFeedData, deletePost } = postsSlice.actions; 
 export default postsSlice.reducer;

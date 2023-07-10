@@ -6,7 +6,7 @@ export interface Post extends Document {
     _id: Schema.Types.ObjectId | string,
     title: string, 
     text: string, 
-    creator: User | Schema.Types.ObjectId | string, 
+    creator: User | Partial<User> | Schema.Types.ObjectId | string, 
     visibility: string, 
     interaction: { 
         likes: number, 

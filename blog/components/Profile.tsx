@@ -13,8 +13,8 @@ import type { RootState } from '@/app/GlobalRedux/store';
 
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import Link from 'next/link';import { Schema } from 'mongoose';
-;
+import Link from 'next/link';
+import { Schema } from 'mongoose';
 
 interface Props { 
   name: string, 

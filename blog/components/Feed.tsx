@@ -33,9 +33,6 @@ const Feed = () => {
     getPostsData (); 
   }, [])
 
-  useEffect( () => { 
-    console.log(posts); 
-  }, [posts]); 
   return (
     <section>
       { posts.length === 0 && 

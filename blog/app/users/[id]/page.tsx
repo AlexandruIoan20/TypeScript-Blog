@@ -6,16 +6,19 @@ import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation'; 
 import { User as UserInterface, initialUser } from '@/models/interfaces/User';
 import { Post } from '@/models/interfaces/Post';
-import { Schema } from 'mongoose';
+import { useSelector, useDispatch } from 'react-redux'; 
+import { deletePost } from '@/app/GlobalRedux/Features/post/postSlice';
 
 const ProfilePage = () => { 
-    const { data: session }: { data: any } = useSession(); 
+    const { data: session } = useSession(); 
     const router = useRouter(); 
     const pathname = usePathname(); 
+    const dispatch = useDispatch(); 
 
     const [ user, setUser ] = useState <Partial<UserInterface>> (initialUser); 
     const [ grades, setGrades ] = useState <string []> ([]); 
     const [ checkMyProfile, setCheckMyProfile ] = useState <boolean> (false); 
+    const [ userPosts, setUserPosts ] = useState <Partial<Post> []> ([]); 
 
   useEffect( () => { 
     console.log(user); 
@@ -27,10 +30,11 @@ const ProfilePage = () => {
   
         setUser(userResponse); 
         setGrades(userResponse.status); 
+        setUserPosts(userResponse.activity.posts); 
   
         // Check if it is my account
         const id = pathname.split('/')[2]; 
-        if(id === session?.user.id)
+        if(id === session?.user?.id)
           setCheckMyProfile(true); 
       } catch(err) { 
         console.log(err); 
@@ -45,8 +49,27 @@ const ProfilePage = () => {
         router.push(`/update-post?id=${post._id}`); 
     }
 
-    const handleDeletePost = (post: Partial<Post>) => { 
+    const handleDeletePost = async (post: Partial<Post>) => { 
+      const posts: Partial<Post> [] = userPosts; 
+      try { 
+        await fetch(`/api/posts/${post._id?.toString()}`, { 
+          method: "DELETE", 
+          mode: 'cors',
+          headers: { 
+            'Content-Type': 'application/json', 
+          }
+        }); 
+         
+      } catch (err) { 
+        console.log("We have an error"); 
+        console.error(err); 
+      }
 
+      const filteredPosts: Partial<Post> [] = posts.filter(el => el._id != post._id); 
+      setUser({ ...user, activity: { ...user.activity, posts: filteredPosts }}); 
+
+      dispatch(deletePost(post._id?.toString())); 
+      window.location.reload();
     }
 
     return (
