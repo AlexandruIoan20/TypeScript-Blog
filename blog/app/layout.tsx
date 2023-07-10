@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import Providers from './GlobalRedux/provider';
 import NavBar from '@/components/NavBar';
 import Provider from '@/components/Provider';
-import Feed from '@/components/Feed';
 
 export const metadata: Metadata = {
   title: 'Blog',

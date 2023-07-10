@@ -56,7 +56,7 @@ const BUTTON_GENERAL_CLASSNAME: string =  `mx-5 text-base font-satoshi bg-light-
   }; 
 
 const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile, grades}: Props) => {
-  const posts = useSelector((state: RootState) => state.posts); 
+  const posts: Partial<Post> [] = useSelector((state: RootState) => state.posts); 
   const { data: session } = useSession(); 
 
   const [ showStats, setShowStats ] = useState<boolean>(false); 
@@ -110,11 +110,17 @@ const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile,
       }
 
       { user?.activity != undefined && user?.activity.posts.length > 0 && 
-          user?.activity.posts.map((post: any) => { 
-            return ( 
-              <pre> { JSON.stringify(post) } </pre>
-            )
-          })
+        user?.activity.posts.map((post: Partial<Post> | any) => { 
+          return ( 
+            <PostCard 
+              onDeletePost = { handleDeletePost }
+              onEditPost = { handleEditPost }
+              key = { Date.now() }
+              dev = { user._id === session?.user?.id }
+              post = { post }
+            /> 
+          )
+        })
       } 
       </>
     </div>

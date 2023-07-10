@@ -2,7 +2,7 @@ import { Schema, Document } from "mongoose";
 import { Post } from "./Post";
 
 interface ActivityInterface { 
-    posts: Schema.Types.ObjectId [] | Post [], 
+    posts: Schema.Types.ObjectId [] | Post [] | Partial<Post> [], 
     likesCount: number, 
     commentsCount: number, 
 }
