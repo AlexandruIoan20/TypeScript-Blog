@@ -1,23 +1,31 @@
 'use client'; 
 
-import React from 'react'; 
+import React, { useState } from 'react'; 
 import { Post } from '@/models/interfaces/Post';
 
-import { usePathname, useRouter} from 'next/navigation'; 
+import { usePathname } from 'next/navigation'; 
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { CommentButton, LikeButton } from './buttons/interaction_buttons';
+import CommentsSection from './Comments/CommentsSection';
 
 interface Props { 
     onDeletePost?: (post: Partial<Post>) => void, 
     onEditPost?: (post: Partial<Post>) => void, 
     dev: boolean, 
     post: Partial<Post> | Post, 
+    like: (post: Partial<Post>) => void, 
 }
 
-const PostCard = ({ onDeletePost, onEditPost, dev, post }: Props ) => {
+const PostCard = ({ onDeletePost, onEditPost, dev, post, like }: Props ) => {
+  const [ showComments, setShowComments ] = useState <boolean> (false); 
   const { data: session } = useSession(); 
   const pathName = usePathname ();
+  const liked = post.interaction?.likeUsers.map(id => id.toString()).includes(session?.user?.id.toString() || ""); 
+
+  const togCommentSection = () => { 
+    setShowComments((sc: boolean) => !sc); 
+  }
 
   return (
     <div className='mb-4'>
@@ -37,9 +45,16 @@ const PostCard = ({ onDeletePost, onEditPost, dev, post }: Props ) => {
             <Link href = { `/posts/${post._id}` } className='default_button'> View Post </Link>
           </div>
         </article>
-        <article>
-          <LikeButton executeFunction={ () => { console.log('executed') }} /> 
-          <CommentButton executeFunction={ () => { console.log('executed') }}/> 
+        <article className = 'flex gap-x-8'>
+          <div className = 'flex gap-x-2'>
+            <LikeButton liked = { liked } executeFunction={ async () =>  { await like (post) } }  /> 
+            <p> In work </p>
+            <p> { post.interaction?.likeUsers.length } </p>
+          </div>
+                    <div className = 'flex gap-x-2'>
+            <CommentButton executeFunction={ togCommentSection }  /> 
+            <p> { post.interaction?.comments.length } </p>
+          </div>
         </article>
       </section>
       { dev && pathName ==  `/users/${session?.user?.id}` && onEditPost != undefined && onDeletePost != undefined && 
@@ -49,6 +64,10 @@ const PostCard = ({ onDeletePost, onEditPost, dev, post }: Props ) => {
               Delete
             </button>
           </div>
+      }
+
+      { showComments && 
+        <CommentsSection limit = { 3 } id = { post._id?.toString() ||  "" } /> 
       }
     </div>
   )

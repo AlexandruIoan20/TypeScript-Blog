@@ -5,14 +5,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Post } from '@/models/interfaces/Post';
-import { useDispatch, useSelector} from 'react-redux';
-import type { RootState } from '../GlobalRedux/store';
-import { addPost } from '../GlobalRedux/Features/post/postSlice';
-
 
 const CreatePost = () => {
-    const posts = useSelector((state: RootState) => state.posts); 
-    const dispatch = useDispatch(); 
     const { data: session } = useSession(); 
     const router = useRouter (); 
 
@@ -36,7 +30,6 @@ const CreatePost = () => {
               }); 
 
               if(response.ok) { 
-                dispatch(addPost(post));
                 console.log("Post added");  
                 router.push("/"); 
               }

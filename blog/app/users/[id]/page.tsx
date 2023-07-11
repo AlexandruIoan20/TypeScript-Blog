@@ -6,14 +6,11 @@ import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation'; 
 import { User as UserInterface, initialUser } from '@/models/interfaces/User';
 import { Post } from '@/models/interfaces/Post';
-import { useSelector, useDispatch } from 'react-redux'; 
-import { deletePost } from '@/app/GlobalRedux/Features/post/postSlice';
 
 const ProfilePage = () => { 
     const { data: session } = useSession(); 
     const router = useRouter(); 
     const pathname = usePathname(); 
-    const dispatch = useDispatch(); 
 
     const [ user, setUser ] = useState <Partial<UserInterface>> (initialUser); 
     const [ grades, setGrades ] = useState <string []> ([]); 
@@ -67,9 +64,6 @@ const ProfilePage = () => {
 
       const filteredPosts: Partial<Post> [] = posts.filter(el => el._id != post._id); 
       setUser({ ...user, activity: { ...user.activity, posts: filteredPosts }}); 
-
-      dispatch(deletePost(post._id?.toString())); 
-      window.location.reload();
     }
 
     return (

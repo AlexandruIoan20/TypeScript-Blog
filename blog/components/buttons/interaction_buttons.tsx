@@ -40,8 +40,8 @@ export function CommentButton({ executeFunction }: { executeFunction: () => void
   );
 }; 
 
-export function LikeButton ({ executeFunction }: { executeFunction: () => void }) { 
-  const [clicked, setClicked] = useState(false);
+export function LikeButton ({ executeFunction, liked }: { executeFunction: () => void, liked?: boolean }) { 
+  const [clicked, setClicked] = useState(liked);
   return ( 
       <button
       onClick  = { () => { executeFunction(); setClicked((cl) => !cl) }}

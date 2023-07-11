@@ -1,29 +1,27 @@
 'use client'; 
 
-import React, { useEffect } from 'react'; 
-import type { RootState } from '@/app/GlobalRedux/store';
-import { useSelector, useDispatch } from 'react-redux';
-import { getFeedData } from '@/app/GlobalRedux/Features/post/postSlice';
+import React, { useEffect, useState} from 'react'; 
 import PostCard from './PostCard';
 import { useSession } from 'next-auth/react';
 import { Post } from '@/models/interfaces/Post';
+import { Schema } from 'mongoose';
 
 const Feed = () => {
   const  { data: session } = useSession(); 
-  const dispatch = useDispatch(); 
-  const posts: Partial <Post> [] = useSelector((state: RootState) => state.posts); 
+  const [ posts, setPosts ] = useState<Partial<Post> []> ([]); 
 
   useEffect(() => { 
     const getPostsData = async () => {
       try { 
         const response = await fetch('/api/posts/public'); 
-        const postsResponse = await response.json() 
+        const postsResponse: Partial<Post> [] = await response.json() 
         
         if(postsResponse.length === 0) {
           return; 
         }
+
+        setPosts(postsResponse); 
         console.log('Data got succesfully'); 
-        dispatch(getFeedData(postsResponse)); 
       } catch (err) {
         console.log("Error in feed");  
         console.error(err); 
@@ -31,7 +29,36 @@ const Feed = () => {
     }
 
     getPostsData (); 
-  }, [])
+  }, []); 
+
+  const like = async (post: Partial<Post>) => { 
+    const id = session?.user?.id; 
+    try { 
+      console.log('Start'); 
+      const response = await fetch(`/api/posts/${post._id}/like`, { 
+        method: 'PATCH', 
+        mode: 'cors', 
+        body: JSON.stringify({ userid: session?.user?.id, postid: post._id  }),
+        headers: {
+          'Content-Type': 'application/json', 
+        }
+      }); 
+      
+      if(post.interaction?.likeUsers.includes(id)) { 
+        post.interaction.likeUsers.filter((user: any) => user.toString() != id?.toString()); 
+      }
+
+      if(response.ok) { 
+        console.log("Finished"); 
+        return; 
+      }; 
+
+      console.log("END"); 
+    } catch (err) { 
+      console.log("We have an error durring giving a like"); 
+      console.log(err); 
+    }
+  }
 
   return (
     <section>

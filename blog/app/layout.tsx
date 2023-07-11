@@ -1,6 +1,5 @@
 import '../styles/globals.css'; 
 import type { Metadata } from 'next'; 
-import Providers from './GlobalRedux/provider';
 import NavBar from '@/components/NavBar';
 import Provider from '@/components/Provider';
 
@@ -18,12 +17,10 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Provider>
-          <Providers>
                 <>
                   <NavBar /> 
                   { children }  
                 </>
-          </Providers>
         </Provider>
       </body>
     </html>
