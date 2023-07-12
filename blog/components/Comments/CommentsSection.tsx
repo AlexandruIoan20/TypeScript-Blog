@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Comment as CommentInterface, initialComment} from "@/models/interfaces/Comment";
 import CommentsForm from "./CommentsForm";
+import { useSession } from "next-auth/react";
 
 interface Props { 
     limit?: number
@@ -11,6 +12,7 @@ interface Props {
 const CommentsSection = ({ limit, id }: Props) => {
     const [ comments, setComments ] = useState<Partial<CommentInterface> []> ([]); 
     const [ newComment, setNewComment ] = useState <Partial<CommentInterface>> (initialComment); 
+    const { data: session } = useSession(); 
 
     useEffect( () => { 
         if(id == "") { 
@@ -32,12 +34,33 @@ const CommentsSection = ({ limit, id }: Props) => {
         getCommentsData(); 
     }, []); 
 
-    const createComment = () => { 
+    const createComment = async (e: React.FormEvent, comment: Partial<CommentInterface> ) => { 
+        e.preventDefault(); 
+        try  { 
+            const response = await fetch(`/api/posts/${id}/comments/create`, { 
+                method: "POST", 
+                mode: 'cors', 
+                body: JSON.stringify({ text: comment.text, userid: session?.user?.id, postid: id }), 
+                headers: { 
+                    'Content-Type': 'application/json', 
+                } 
+            }); 
 
+            let commentsUpdate = comments; 
+            commentsUpdate.push(comment); 
+            setComments(commentsUpdate); 
+
+            if(response.ok) { 
+                return; 
+            }
+        } catch (err) { 
+            console.log(err); 
+        }
     }
   return (  
     <section>
         <pre> {  JSON.stringify(comments) } </pre>
+        <p> Comentarii: </p>
         <CommentsForm 
             handleSubmit = { createComment }
             comment = { newComment }
