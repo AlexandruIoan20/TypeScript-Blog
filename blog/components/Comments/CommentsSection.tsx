@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Comment as CommentInterface, initialComment} from "@/models/interfaces/Comment";
 import CommentsForm from "./CommentsForm";
 import { useSession } from "next-auth/react";
-import Comment from "./SingleComment";
+import SingleComment from "./SingleComment";
 import { usePathname } from "next/navigation";
 
 interface Props { 
@@ -78,6 +78,66 @@ const CommentsSection = ({ limit, id  }: Props) => {
             console.log(err); 
         }
     }
+
+    const deleteComment = async (comment: Partial<CommentInterface> ) => { 
+        try { 
+            const response = await fetch(`/api/posts/${id}/comments/${comment._id}`, { 
+                method: "DELETE", 
+                mode: "cors", 
+                headers: { 
+                    'Content-Type': "application/json" 
+                }
+            } ); 
+
+            let commentsUpdate = comments; 
+
+            commentsUpdate = commentsUpdate.filter(com => com._id?.toString () != comment._id?.toString()); 
+            setComments(commentsUpdate); 
+
+            if(response.ok) { 
+                return; 
+            }
+        } catch (err) { 
+            console.log(err); 
+        }
+    }; 
+
+    const editComment = async (e: React.FormEvent<Element> , comment: Partial<CommentInterface>, text: string ) => { //bug un edit in minus la setstate in display
+        e.preventDefault(); 
+
+        try { 
+            const response = await fetch(`/api/posts/${id}/comments/${comment._id}`,  {
+                method: "PATCH", 
+                mode: "cors", 
+                body: JSON.stringify({ text }), 
+                headers: { 
+                    'Content-Type': 'application/json', 
+                }
+            }); 
+
+            comment.text = text; 
+
+            let commentUpdate = comments; 
+            commentUpdate.map(com => { 
+                if(com._id?.toString() === comment._id?.toString()) {  
+                    console.log(comment); 
+                    return comment; 
+                }
+
+                return com; 
+            }); 
+
+            setComments(commentUpdate); 
+            console.log(commentUpdate); 
+
+            if(response.ok) { 
+                return; 
+            }
+        } catch(err) { 
+            console.log(err); 
+        }
+    }
+
   return (  
     <section className = 'bg-slate-100 my-4 py-2 mx-4 shadow-xl'>
         <>
@@ -104,7 +164,11 @@ const CommentsSection = ({ limit, id  }: Props) => {
                     {
                         comments.map((com) => { 
                             return ( 
-                                <Comment comment = { com } /> 
+                                <SingleComment 
+                                    comment = { com } 
+                                    deleteComment = { deleteComment }
+                                    editComment = { editComment }
+                                /> 
                             )
                         })
                     }

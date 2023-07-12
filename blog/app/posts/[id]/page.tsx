@@ -1,29 +1,9 @@
 'use client'; 
 import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from 'react'; 
-import { AiFillHeart } from "react-icons/ai";
-import { FaComment } from "react-icons/fa";
-import { IconContext } from "react-icons";
 import { CommentButton, LikeButton } from "@/components/buttons/interaction_buttons";
 import { Post as PostInterface, initialPost } from "@/models/interfaces/Post";
 import CommentsSection from "@/components/Comments/CommentsSection";
-import { Comment as CommentInterface  } from "@/models/interfaces/Comment";
-
-const CustomHeartInfo = () => {
-    return (
-        <IconContext.Provider value = {{ size: '20', color: '#BF99F2'}} >
-            <AiFillHeart /> 
-        </IconContext.Provider>
-    )
-}; 
-
-const CustomCommentInfo = () => { 
-    return ( 
-        <IconContext.Provider value = {{ size: '20', color: '#BF99F2' }}>
-            <FaComment /> 
-        </IconContext.Provider>
-    )
-}
 
 const Post = () => {
     const pathName = usePathname(); 
