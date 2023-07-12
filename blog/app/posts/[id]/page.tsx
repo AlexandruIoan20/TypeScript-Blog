@@ -5,10 +5,9 @@ import { AiFillHeart } from "react-icons/ai";
 import { FaComment } from "react-icons/fa";
 import { IconContext } from "react-icons";
 import { CommentButton, LikeButton } from "@/components/buttons/interaction_buttons";
-import { Post as PostInterface } from "@/models/interfaces/Post";
-import { useSelector } from "react-redux";
-import { RootState } from "@/app/GlobalRedux/store";
-import { initialPost } from "@/models/interfaces/Post";
+import { Post as PostInterface, initialPost } from "@/models/interfaces/Post";
+import CommentsSection from "@/components/Comments/CommentsSection";
+import { Comment as CommentInterface  } from "@/models/interfaces/Comment";
 
 const CustomHeartInfo = () => {
     return (
@@ -28,9 +27,9 @@ const CustomCommentInfo = () => {
 
 const Post = () => {
     const pathName = usePathname(); 
-    const posts = useSelector((state: RootState) => state.posts); 
     const id: string = pathName.split("/")[2]; 
-    const [post, setPost] = useState <Partial<PostInterface>> ({}); 
+    const [post, setPost] = useState <Partial<PostInterface>> (initialPost); 
+    const [ showCommentSection, setShowCommentsSection ] = useState <boolean> (false); 
 
     useEffect( () => { 
         const getPostData = async () => { 
@@ -39,22 +38,13 @@ const Post = () => {
 
             setPost(postData); 
         }
-        if(posts.length > 0) { 
-            setPost(posts.filter((p) => { 
-                console.log(p._id?.toString())
-                if(p._id?.toString() == id.toString()) { 
-                    console.log({ p }); 
-                    return p; 
-                }
-                else {
-                    console.log(0); 
-                    return false; 
-                }
-            })[0]); 
-        } else { 
-            getPostData(); 
-        }
+
+        getPostData(); 
     }, []); 
+
+    const toggleCommentSection = () => { 
+        setShowCommentsSection(sc => !sc); 
+    }
     
   return (
     <section>
@@ -65,22 +55,6 @@ const Post = () => {
         { post!= undefined && 
             <>
                 <h1 className="global_header"> {post.title} </h1>
-                <div className="my-5 bg-slate-200 mb-10 shadow-xl">
-                    <ul className="flex gap-x-10 px-2">
-                        <li className="flex"> 
-                            <span className="flex justify-center items-center mr-1">
-                                <CustomHeartInfo />
-                            </span> 
-                            <p> { post.interaction?.likes }  </p> 
-                        </li>
-                        <li className="flex">
-                            <span className="flex justify-center items-center mr-1" >
-                                <CustomCommentInfo /> 
-                            </span>
-                            <p> { post.interaction?.comments.length } </p>
-                        </li>
-                    </ul>
-                </div>
 
                 <article className="mx-20 bg-slate-200 shadow-xl p-5">
                     { post.text }
@@ -90,12 +64,13 @@ const Post = () => {
                             <LikeButton executeFunction={ () => { }}/> 
                             <p> { post.interaction?.likes }  </p> 
                         </div>
-                        <div className="flex">
-                            <CommentButton executeFunction={ () => { }} /> 
-                            <p> { post.interaction?.comments.length } </p>
-                        </div>
+                        <CommentButton executeFunction={ toggleCommentSection } /> 
                     </section>
                 </article>
+
+                { showCommentSection && 
+                    <CommentsSection id = { post._id?.toString() || "" } /> 
+                }
             </>
         }
     </section>

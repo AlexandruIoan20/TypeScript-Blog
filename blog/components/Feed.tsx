@@ -4,7 +4,7 @@ import React, { useEffect, useState} from 'react';
 import PostCard from './PostCard';
 import { useSession } from 'next-auth/react';
 import { Post } from '@/models/interfaces/Post';
-import { Schema } from 'mongoose';
+import { Comment } from '@/models/interfaces/Comment';
 
 const Feed = () => {
   const  { data: session } = useSession(); 
