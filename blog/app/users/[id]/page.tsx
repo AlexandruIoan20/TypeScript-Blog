@@ -16,7 +16,7 @@ const ProfilePage = () => {
     const [ grades, setGrades ] = useState <string []> ([]); 
     const [ checkMyProfile, setCheckMyProfile ] = useState <boolean> (false); 
     const [ userPosts, setUserPosts ] = useState <Partial<Post> []> ([]); 
-    const [ name, setName ] = useState <string> (""); 
+    const [ showPostTypes, setShowPostTypes ] = useState <boolean> (true) //true for posts and false for todo lists
 
   useEffect( () => { 
     console.log(user); 
@@ -24,15 +24,7 @@ const ProfilePage = () => {
       // Get User
       try { 
         const response = await fetch(`/api${pathname}`); 
-        const userResponse = await response.json(); 
-
-        console.log({ session: session?.user?.id, user: userResponse._id })
-        if(session?.user?.id.toString() == userResponse._id?.toString()) { 
-          setName('My'); 
-        } else { 
-          setName(`${user.username}'s`); 
-        }
-    
+        const userResponse = await response.json();     
   
         setUser(userResponse); 
         setGrades(userResponse.status); 
@@ -86,6 +78,8 @@ const ProfilePage = () => {
               handleDeletePost = { handleDeletePost }
               checkMyProfile = { checkMyProfile }
               grades = { grades }
+              showPostTypes = { showPostTypes }
+              setShowPostTypes = { setShowPostTypes }
             />
           ) 
           : 
