@@ -18,6 +18,8 @@ const CommentsSection = ({ limit, id  }: Props) => {
     const [ newComment, setNewComment ] = useState <Partial<CommentInterface>> (initialComment); 
     const [ noComments, setNoComments ] = useState <boolean> (false); 
     const { data: session } = useSession(); 
+    const [ newCommentText, setNewCommentText ] = useState <string> (''); 
+    const [ showEditor, setShowEditor ] = useState <string> (''); 
 
     useEffect( () => { 
         if(id == "") { 
@@ -92,6 +94,7 @@ const CommentsSection = ({ limit, id  }: Props) => {
             let commentsUpdate = comments; 
 
             commentsUpdate = commentsUpdate.filter(com => com._id?.toString () != comment._id?.toString()); 
+            console.log({ commentsUpdate }); 
             setComments(commentsUpdate); 
 
             if(response.ok) { 
@@ -104,6 +107,11 @@ const CommentsSection = ({ limit, id  }: Props) => {
 
     const editComment = async (e: React.FormEvent<Element> , comment: Partial<CommentInterface>, text: string ) => { //bug un edit in minus la setstate in display
         e.preventDefault(); 
+
+        if(text === "") { 
+            alert("You cannot leave an empty comment..."); 
+            return; 
+        }
 
         try { 
             const response = await fetch(`/api/posts/${id}/comments/${comment._id}`,  {
@@ -130,12 +138,30 @@ const CommentsSection = ({ limit, id  }: Props) => {
             setComments(commentUpdate); 
             console.log(commentUpdate); 
 
+            setNewCommentText(""); 
+            setShowEditor(''); 
+
             if(response.ok) { 
                 return; 
             }
         } catch(err) { 
             console.log(err); 
         }
+    }
+
+    const handleShowEdit = (id: string) => { 
+        if(id == "") { 
+            console.log("We have an error showing the input."); 
+            return; 
+        }
+
+        comments.forEach(com => { 
+            if(com._id?.toString() === id) { 
+                setShowEditor(id); 
+                setNewCommentText(com.text === undefined ? "none" : com.text); 
+                console.log({ id }); 
+            }
+        })
     }
 
   return (  
@@ -168,6 +194,10 @@ const CommentsSection = ({ limit, id  }: Props) => {
                                     comment = { com } 
                                     deleteComment = { deleteComment }
                                     editComment = { editComment }
+                                    newCommentText = { newCommentText }
+                                    showEditor = { showEditor }
+                                    setNewCommentText = { setNewCommentText }
+                                    handleShowEdit = { handleShowEdit }
                                 /> 
                             )
                         })
