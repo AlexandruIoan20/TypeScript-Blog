@@ -24,6 +24,10 @@ const UserSchema = new Schema({
             type: [Schema.Types.ObjectId], 
             ref: 'Post', 
         }, 
+        todos: { 
+            type: [Schema.Types.ObjectId], 
+            ref: "Todo"
+        }, 
         likesCount: { 
             type: Schema.Types.Number, 
             default: 0, 

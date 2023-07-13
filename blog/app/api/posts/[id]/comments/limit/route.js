@@ -6,8 +6,8 @@ export const GET = async (req, { params }) => {
     try { 
         await connectToDB(); 
         const comments = await Comment.find({ post: params.id }).limit(2).populate('creator'); 
+        console.log({ comments }); 
         const commentsCount = await Comment.countDocuments({ }); 
-        console.log(comments[0].creator); 
 
         return new Response(JSON.stringify({ comments, commentsCount }), { status: 200 }); 
     } catch (err) { 

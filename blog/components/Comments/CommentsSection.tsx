@@ -5,6 +5,7 @@ import CommentsForm from "./CommentsForm";
 import { useSession } from "next-auth/react";
 import SingleComment from "./SingleComment";
 import { usePathname } from "next/navigation";
+import { Schema } from "mongoose";
 
 interface Props { 
     limit?: number
@@ -54,35 +55,44 @@ const CommentsSection = ({ limit, id, postCreator  }: Props) => {
 
     const createComment = async (e: React.FormEvent, comment: Partial<CommentInterface> ) => { 
         e.preventDefault(); 
-        try  { 
-            const response = await fetch(`/api/posts/${id}/comments/create`, { 
-                method: "POST", 
-                mode: 'cors', 
-                body: JSON.stringify({ text: comment.text, userid: session?.user?.id, postid: id }), 
-                headers: { 
-                    'Content-Type': 'application/json', 
-                } 
-            }); 
-
-            let commentsUpdate = comments; 
-
-            const commentObject: Partial <CommentInterface>  = { 
-                text: comment.text, 
-                creator: session?.user?.id, 
-                post: id, 
+        const commentid: string | Schema.Types.ObjectId | null = session?.user?.id ? session?.user.id : null; 
+        if(commentid != null) { 
+            try  { 
+                const response = await fetch(`/api/posts/${id}/comments/create`, { 
+                    method: "POST", 
+                    mode: 'cors', 
+                    body: JSON.stringify({ text: comment.text, userid: session?.user?.id, postid: id }), 
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                    } 
+                }); 
+    
+                const userResponse = await fetch(`/api/users/${commentid}`); 
+                const commentUser = await userResponse.json(); 
+                console.log({ commentUser }); 
+    
+                let commentsUpdate = comments; 
+    
+                const commentObject: any  = { 
+                    text: comment.text, 
+                    creator: commentUser, 
+                    post: id,  
+                }
+    
+                commentsUpdate.push(commentObject); 
+                console.log({ commentsUpdate }); 
+                setComments(commentsUpdate);
+                
+                setNewComment(initialComment); 
+    
+                if(response.ok) { 
+                    return; 
+                }
+            } catch (err) { 
+                console.log(err); 
             }
-
-            commentsUpdate.push(commentObject); 
-            console.log({ commentsUpdate }); 
-            setComments(commentsUpdate);
-            
-            setNewComment(initialComment); 
-
-            if(response.ok) { 
-                return; 
-            }
-        } catch (err) { 
-            console.log(err); 
+        } else { 
+            console.log('commentid is null')
         }
     }
 

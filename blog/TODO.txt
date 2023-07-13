@@ -1,1 +1,0 @@
-Comments State Bug: NewText and Edit function in COmmentsSection

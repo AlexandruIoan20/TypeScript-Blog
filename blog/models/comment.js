@@ -10,7 +10,7 @@ const CommentSchema = new Schema({
     }, 
     creator: { 
         type: Schema.Types.ObjectId, 
-        red: 'User', 
+        ref: 'User', 
         required: [ true, 'Creator is required!'], 
     }, 
     post: { 
