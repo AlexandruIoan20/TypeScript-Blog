@@ -13,7 +13,7 @@ interface Props {
     onDeletePost?: (post: Partial<Post>) => void, 
     onEditPost?: (post: Partial<Post>) => void, 
     dev: boolean, 
-    post: Partial<Post> | Post, 
+    post: Partial<Post> , 
     like: (post: Partial<Post>) => void, 
 }
 
@@ -29,7 +29,6 @@ const PostCard = ({ onDeletePost, onEditPost, dev, post, like }: Props ) => {
 
   return (
     <div className='mb-4'>
-      <pre> { JSON.stringify(post.interaction) } </pre>
       <section className='bg-slate-200 px-6 pb-2 pt-2 mx-4 mt-2 rounded-2xl shadow-lg'>
         <article className='flex'>
           <div>
@@ -67,7 +66,7 @@ const PostCard = ({ onDeletePost, onEditPost, dev, post, like }: Props ) => {
       }
 
       { showComments && 
-        <CommentsSection limit = { 2 } id = { post._id?.toString() ||  "" } /> 
+        <CommentsSection limit = { 2 } id = { post._id?.toString() ||  "" } postCreator = { post.creator?._id?.toString() } /> 
       }
     </div>
   )

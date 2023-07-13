@@ -1,6 +1,6 @@
 'use client'; 
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Comment } from '@/models/interfaces/Comment'; 
 import { useSession } from 'next-auth/react';
 
@@ -11,10 +11,11 @@ interface Props {
   showEditor: string, 
   newCommentText: string, 
   setNewCommentText: React.Dispatch<React.SetStateAction<string>>, 
-  handleShowEdit: (id: string) => void
+  handleShowEdit: (id: string) => void, 
+  developerMode: boolean
 }
 
-const SingleComment = ({ comment, deleteComment, editComment, newCommentText, showEditor, setNewCommentText, handleShowEdit }: Props) => {
+const SingleComment = ({ comment, deleteComment, editComment, newCommentText, showEditor, setNewCommentText, handleShowEdit, developerMode}: Props) => {
   const { data: session } = useSession(); 
 
   return (
@@ -41,6 +42,10 @@ const SingleComment = ({ comment, deleteComment, editComment, newCommentText, sh
             <button className = 'default_button' onClick = { () => handleShowEdit(comment._id?.toString() || "") }> Edit </button>
             <button className = 'default_button' onClick = { () => { deleteComment(comment)}}> Delete </button>
           </>
+        }
+
+        { developerMode && 
+            <button className = 'default_button' onClick = { () => { deleteComment(comment)}}> Delete </button>
         }
       </section>
     </article>

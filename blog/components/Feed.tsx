@@ -4,7 +4,6 @@ import React, { useEffect, useState} from 'react';
 import PostCard from './PostCard';
 import { useSession } from 'next-auth/react';
 import { Post } from '@/models/interfaces/Post';
-import { Comment } from '@/models/interfaces/Comment';
 
 const Feed = () => {
   const  { data: session } = useSession(); 
@@ -32,32 +31,7 @@ const Feed = () => {
   }, []); 
 
   const like = async (post: Partial<Post>) => { 
-    const id = session?.user?.id; 
-    try { 
-      console.log('Start'); 
-      const response = await fetch(`/api/posts/${post._id}/like`, { 
-        method: 'PATCH', 
-        mode: 'cors', 
-        body: JSON.stringify({ userid: session?.user?.id, postid: post._id  }),
-        headers: {
-          'Content-Type': 'application/json', 
-        }
-      }); 
-      
-      if(post.interaction?.likeUsers.includes(id)) { 
-        post.interaction.likeUsers.filter((user: any) => user.toString() != id?.toString()); 
-      }
-
-      if(response.ok) { 
-        console.log("Finished"); 
-        return; 
-      }; 
-
-      console.log("END"); 
-    } catch (err) { 
-      console.log("We have an error durring giving a like"); 
-      console.log(err); 
-    }
+    console.log("Hello"); 
   }
 
   return (
@@ -73,6 +47,7 @@ const Feed = () => {
             <PostCard 
               key = { Date.now() }
               post = { post }
+              like = { like }
               dev = { post.creator?.toString() === session?.user?.id }
             /> 
           )

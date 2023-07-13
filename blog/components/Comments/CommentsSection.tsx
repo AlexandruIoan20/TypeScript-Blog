@@ -9,9 +9,10 @@ import { usePathname } from "next/navigation";
 interface Props { 
     limit?: number
     id: string, 
+    postCreator: string, 
 }
 
-const CommentsSection = ({ limit, id  }: Props) => {
+const CommentsSection = ({ limit, id, postCreator  }: Props) => {
     const pathName = usePathname(); 
 
     const [ comments, setComments ] = useState<Partial<CommentInterface> []> ([]); 
@@ -20,6 +21,8 @@ const CommentsSection = ({ limit, id  }: Props) => {
     const { data: session } = useSession(); 
     const [ newCommentText, setNewCommentText ] = useState <string> (''); 
     const [ showEditor, setShowEditor ] = useState <string> (''); 
+
+    const [ developerMode, setDeveloperMode ] = useState <boolean> (false); 
 
     useEffect( () => { 
         if(id == "") { 
@@ -44,6 +47,8 @@ const CommentsSection = ({ limit, id  }: Props) => {
             }
         }; 
 
+
+        if(session?.user?.id === postCreator) setDeveloperMode(true); 
         getCommentsData(); 
     }, []); 
 
@@ -191,6 +196,7 @@ const CommentsSection = ({ limit, id  }: Props) => {
                         comments.map((com) => { 
                             return ( 
                                 <SingleComment 
+                                    developerMode = { developerMode }
                                     comment = { com } 
                                     deleteComment = { deleteComment }
                                     editComment = { editComment }
