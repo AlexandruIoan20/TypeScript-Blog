@@ -4,12 +4,15 @@ import React, { useState, useEffect } from 'react';
 import { CommentButton, LikeButton } from "@/components/buttons/interaction_buttons";
 import { Post as PostInterface, initialPost } from "@/models/interfaces/Post";
 import CommentsSection from "@/components/Comments/CommentsSection";
+import { useSession } from "next-auth/react";
 
 const Post = () => {
     const pathName = usePathname(); 
     const id: string = pathName.split("/")[2]; 
+    const { data: session } = useSession(); 
+
     const [post, setPost] = useState <Partial<PostInterface>> (initialPost); 
-    const [ showCommentSection, setShowCommentsSection ] = useState <boolean> (false); 
+    const [ showCommentSection, setShowCommentsSection ] = useState <boolean> (false);
 
     useEffect( () => { 
         const getPostData = async () => { 
@@ -28,6 +31,7 @@ const Post = () => {
     
   return (
     <section>
+        <pre> { JSON.stringify(post.creator) } </pre>
         { post == initialPost && 
             <p> Loading...</p>
         }
@@ -49,7 +53,7 @@ const Post = () => {
                 </article>
 
                 { showCommentSection && 
-                    <CommentsSection id = { post._id?.toString() || "" } /> 
+                    <CommentsSection id = { post._id?.toString() || "" } postCreator = { post.creator?.toString() || "" } /> 
                 }
             </>
         }

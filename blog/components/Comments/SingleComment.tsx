@@ -1,6 +1,6 @@
 'use client'; 
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Comment } from '@/models/interfaces/Comment'; 
 import { useSession } from 'next-auth/react';
 import { User as UserInterface, initialUser } from '@/models/interfaces/User';
@@ -22,12 +22,10 @@ const SingleComment = ({ comment, deleteComment, editComment, newCommentText, sh
   const { data: session } = useSession(); 
   const CREATOR: Partial<UserInterface> = comment.creator || initialUser;
 
-  useEffect( () =>  { console.log({ CREATOR })}, [] )
-
   return (
     <article className = 'p-2 bg-slate-200 my-2 mx-4 shadow-md'>
       <section className = 'flex items-center gap-x-2 mb-2'>
-        <img src = { `${CREATOR.image}` } width = { 30 } height = { 30 } className = 'rounded-3xl' alt = 'user_image' /> 
+        <Image src = { `${CREATOR.image}` } width = { 30 } height = { 30 } className = 'rounded-3xl' alt = 'user_image' /> 
         <div className = 'font-inter text-sm text-gray-600'>
           { `@${CREATOR.username}` }
         </div>
@@ -46,15 +44,26 @@ const SingleComment = ({ comment, deleteComment, editComment, newCommentText, sh
           </form>
         }
 
-        { session?.user?.id.toString() === CREATOR._id?.toString() && 
-          <>
-            <button className = 'default_button' onClick = { () => handleShowEdit(comment._id?.toString() || "") }> Edit </button>
-            <button className = 'default_button' onClick = { () => { deleteComment(comment)}}> Delete </button>
-          </>
-        }
+        { developerMode ? 
+          ( 
+            <>
+              { session?.user?.id.toString() === CREATOR._id?.toString()  ? 
+                ( 
+                  <>
+                    <button className = 'default_button' onClick = { () => handleShowEdit(comment._id?.toString() || "") }> Edit </button>
+                    <button className = 'default_button' onClick = { () => { deleteComment(comment)}}> Delete </button></> 
+                ) : ( 
+                  <>
+                    <button className = 'default_button' onClick = { () => { deleteComment(comment)}}> Delete </button>
+                  </>
+                )
 
-        { developerMode && 
-            <button className = 'default_button' onClick = { () => { deleteComment(comment)}}> Delete </button>
+              }
+            </>
+          ) : ( 
+            <>
+            </>
+          )
         }
       </section>
     </article>

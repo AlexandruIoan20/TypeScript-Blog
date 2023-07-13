@@ -66,7 +66,7 @@ const PostCard = ({ onDeletePost, onEditPost, dev, post, like }: Props ) => {
       }
 
       { showComments && 
-        <CommentsSection limit = { 2 } id = { post._id?.toString() ||  "" } postCreator = { post.creator?._id?.toString() } /> 
+        <CommentsSection limit = { 2 } id = { post._id?.toString() ||  "" } postCreator = { post.creator?._id?.toString()  || "" } /> 
       }
     </div>
   )

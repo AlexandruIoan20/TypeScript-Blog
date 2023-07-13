@@ -1,4 +1,5 @@
 'use client'; 
+
 import React, { useState, useEffect } from "react";
 import { Comment as CommentInterface, initialComment} from "@/models/interfaces/Comment";
 import CommentsForm from "./CommentsForm";
@@ -49,7 +50,9 @@ const CommentsSection = ({ limit, id, postCreator  }: Props) => {
         }; 
 
 
-        if(session?.user?.id === postCreator) setDeveloperMode(true); 
+        console.log({ postCreator }); 
+        if(session?.user?.id == postCreator) setDeveloperMode(true); 
+        console.log( { developerM:  session?.user?.id === postCreator }); 
         getCommentsData(); 
     }, []); 
 
@@ -100,6 +103,7 @@ const CommentsSection = ({ limit, id, postCreator  }: Props) => {
         try { 
             const response = await fetch(`/api/posts/${id}/comments/${comment._id}`, { 
                 method: "DELETE", 
+                body: JSON.stringify({ userid: comment.creator?._id, postid: id }), 
                 mode: "cors", 
                 headers: { 
                     'Content-Type': "application/json" 
@@ -120,7 +124,7 @@ const CommentsSection = ({ limit, id, postCreator  }: Props) => {
         }
     }; 
 
-    const editComment = async (e: React.FormEvent<Element> , comment: Partial<CommentInterface>, text: string ) => { //bug un edit in minus la setstate in display
+    const editComment = async (e: React.FormEvent<Element> , comment: Partial<CommentInterface>, text: string ) => {
         e.preventDefault(); 
 
         if(text === "") { 

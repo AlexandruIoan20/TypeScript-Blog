@@ -1,6 +1,7 @@
 import { connectToDB } from '../../../../../../utils/database'; 
 import Comment from '../../../../../../models/comment'; 
 import Post from '../../../../../../models/post'; 
+import User from '@/models/user';
 
 export const POST = async (req, { params }) => { 
     try { 
@@ -18,6 +19,13 @@ export const POST = async (req, { params }) => {
         newCommentsArray.push(newComment); 
 
         await newComment.save ();
+
+        const user = await User.findOne({ _id: userid }); 
+        user.activity.commentsCount += 1; 
+
+        console.log({ user });
+
+        await user.save(); 
 
         await Post.findOneAndUpdate({ _id: postid }, { '$set': { 
             'interaction.comments': newCommentsArray
