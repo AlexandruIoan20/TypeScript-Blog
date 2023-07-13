@@ -9,6 +9,8 @@ import { useSession } from 'next-auth/react';
 import { CommentButton, LikeButton } from './buttons/interaction_buttons';
 import CommentsSection from './Comments/CommentsSection';
 
+import Image from 'next/image';
+
 interface Props { 
     onDeletePost?: (post: Partial<Post>) => void, 
     onEditPost?: (post: Partial<Post>) => void, 
@@ -35,14 +37,24 @@ const PostCard = ({ onDeletePost, onEditPost, dev, post, like }: Props ) => {
             { !dev && pathName != `/users/${session?.user?.id}` && 
                 <h2 className='text-2xl font-inter'>{ post.title } </h2>
             }
-            { post.creator?.username != undefined && `@${ post.creator?.username }`}
+
+          <Link href = { `/users/${post.creator?._id}`}>
+            <div className = 'flex items-center gap-x-2 mb-4'>
+              { post.creator?.username != undefined && 
+                <Image src = { post.creator?.image } width = { 20 } className = 'rounded-3xl' height = { 20 } alt = 'user_image ' /> 
+              }
+              <p>
+                { post.creator?.username != undefined && `@${ post.creator?.username }`}
+              </p>
+            </div>  
+          </Link>  
 
             { dev && pathName ==  `/users/${session?.user?.id}` && 
               <h2 className='text-2xl font-inter'>{ post.title } - { post.visibility } </h2>
             }
           </div>
           <div className='flex justify-end ml-auto'>
-            <Link href = { `/posts/${post._id}` } className='default_button'> View Post </Link>
+            <Link href = { `/posts/${post._id}` } className='default_button my-auto py-4'> View Post </Link>
           </div>
         </article>
         <article className = 'flex gap-x-8'>

@@ -1,0 +1,2 @@
+Primul comentariu la fiecare postare = bug la update 
+Prima postare din feed reapare cand schimbi pagina 

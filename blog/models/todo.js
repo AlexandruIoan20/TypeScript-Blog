@@ -31,3 +31,5 @@ const ToDoSchema = new Schema({
     }
 }); 
 
+const Todo = models.Todo || model('Todo', ToDoSchema); 
+export default Todo; 

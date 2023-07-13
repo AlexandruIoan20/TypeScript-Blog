@@ -31,7 +31,6 @@ const Post = () => {
     
   return (
     <section>
-        <pre> { JSON.stringify(post.creator) } </pre>
         { post == initialPost && 
             <p> Loading...</p>
         }

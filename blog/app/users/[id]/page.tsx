@@ -16,6 +16,7 @@ const ProfilePage = () => {
     const [ grades, setGrades ] = useState <string []> ([]); 
     const [ checkMyProfile, setCheckMyProfile ] = useState <boolean> (false); 
     const [ userPosts, setUserPosts ] = useState <Partial<Post> []> ([]); 
+    const [ name, setName ] = useState <string> (""); 
 
   useEffect( () => { 
     console.log(user); 
@@ -24,6 +25,14 @@ const ProfilePage = () => {
       try { 
         const response = await fetch(`/api${pathname}`); 
         const userResponse = await response.json(); 
+
+        console.log({ session: session?.user?.id, user: userResponse._id })
+        if(session?.user?.id.toString() == userResponse._id?.toString()) { 
+          setName('My'); 
+        } else { 
+          setName(`${user.username}'s`); 
+        }
+    
   
         setUser(userResponse); 
         setGrades(userResponse.status); 
@@ -71,7 +80,7 @@ const ProfilePage = () => {
           { user != undefined ? 
           (
             <Profile 
-              name = 'My'
+              name = { `${user.username}'s` }
               user = { user }
               handleEditPost = { handleEditPost }
               handleDeletePost = { handleDeletePost }
