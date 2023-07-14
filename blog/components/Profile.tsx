@@ -7,7 +7,6 @@ import { Post } from '@/models/interfaces/Post';
 import GradesList from './Grade';
 import Alert from './Alert';
 import PostCard from './PostCard';
-import { initialPost } from '@/models/interfaces/Post';
 
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -89,6 +88,16 @@ const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile,
   const { data: session } = useSession(); 
   const [ showStats, setShowStats ] = useState<boolean>(false); 
 
+  useEffect( () => { 
+    const getTodoData = async () => { 
+      const response = await fetch(`/api/users/${user._id}/todos`); 
+      const todoResponse = await response.json(); 
+    }
+    if(!showPostTypes) { 
+      getTodoData(); 
+    }
+  }, [showPostTypes])
+
   const like = () => { 
 
   }
@@ -119,8 +128,9 @@ const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile,
       </article>
       <hr className='my-2 mx-10'/>
 
-
-      <ChangerMenu showPostTypes = { showPostTypes } setShowPostTypes = { setShowPostTypes } /> 
+      { session?.user?.id === user._id && 
+          <ChangerMenu showPostTypes = { showPostTypes } setShowPostTypes = { setShowPostTypes } /> 
+      }
 
       { showStats && user.activity != undefined && 
         <Alert 
