@@ -7,10 +7,12 @@ export const GET = async(request, { params }) => {
         await connectToDB(); 
         const id = params.id; 
         console.log(id)
-        console.log("Getting the user traala"); 
 
-        const user = await User.findOne({ _id: id }).populate(`activity.posts`).exec();
-        console.log(user); 
+        const user = await User.findOne({ _id: id })
+        .populate('activity.posts')
+        .exec();
+  
+        console.log(user);
 
         if(!user) { 
             return new Response("User not found", { status: 404}); 

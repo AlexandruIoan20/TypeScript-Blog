@@ -1,4 +1,3 @@
-
 'use client'; 
 
 import React, { useEffect } from 'react';
@@ -7,6 +6,8 @@ import { Post } from '@/models/interfaces/Post';
 import GradesList from './Grade';
 import Alert from './Alert';
 import PostCard from './PostCard';
+import { Todo as TodoInterface } from '@/models/interfaces/Todo';
+import TodoCard from './Todo/TodoCard';
 
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
@@ -54,14 +55,14 @@ const DeveloperArea = ({ onShowStats }: { onShowStats: () => void }) => {
     <div className= 'flex flex-col justify-center content-center ml-auto mr-10'>
         <ul className='flex flex-row'>
           <DeveloperButton name = { 'View Stats' } executeFunction = { onShowStats }  /> 
-          <Link href = '/create-post' className= { BUTTON_GENERAL_CLASSNAME }> Create Post </Link>
-          <DeveloperButton name = { 'testB' } executeFunction = { () => { }} /> 
-        </ul>
+          <Link href = '/create-post' className = { BUTTON_GENERAL_CLASSNAME }> Create Post </Link>
+          <Link href = '/create-todo' className = { BUTTON_GENERAL_CLASSNAME }> Creater To Do</Link>
+        </ul> 
     </div>
   )
 }; 
 
-  const ChangerMenu =  ({ showPostTypes, setShowPostTypes }: ChangerProps ) => { 
+  const ChangerMenu = ({ showPostTypes, setShowPostTypes }: ChangerProps ) => { 
     const [ itemClasses, setItemClasses ] = useState <string []> ([CHANGER_ITEM_HOVER, CHANGER_ITEM]); 
 
     useEffect( () => { 
@@ -70,7 +71,8 @@ const DeveloperArea = ({ onShowStats }: { onShowStats: () => void }) => {
       } else { 
         setItemClasses([CHANGER_ITEM, CHANGER_ITEM_HOVER])
       }
-    })
+    }, [showPostTypes]);
+
     return ( 
       <section className = 'flex'>
         <p onClick = { () => { setShowPostTypes(true)} } className = { `${itemClasses[0]}` }>
@@ -81,22 +83,13 @@ const DeveloperArea = ({ onShowStats }: { onShowStats: () => void }) => {
         </p>
       </section>
     )
-  }
+}
   
 
-const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile, showPostTypes, setShowPostTypes, grades}: Props) => {
+const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile, showPostTypes, setShowPostTypes, grades }: Props) => {
   const { data: session } = useSession(); 
   const [ showStats, setShowStats ] = useState<boolean>(false); 
 
-  useEffect( () => { 
-    const getTodoData = async () => { 
-      const response = await fetch(`/api/users/${user._id}/todos`); 
-      const todoResponse = await response.json(); 
-    }
-    if(!showPostTypes) { 
-      getTodoData(); 
-    }
-  }, [showPostTypes])
 
   const like = () => { 
 
@@ -150,20 +143,30 @@ const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile,
         <Link href = '/create-post' className='default_button'> Create Your First Post </Link>
       }
 
-      { user?.activity != undefined && user?.activity.posts.length > 0 && 
-        user?.activity.posts.map((post: Partial<Post> | any) => { 
-          return ( 
-            <PostCard 
-              like = { like }
-              onDeletePost = { handleDeletePost }
-              onEditPost = { handleEditPost }
-              key = { Date.now() }
-              dev = { user._id === session?.user?.id }
-              post = { post }
-            /> 
-          )
-        })
-      } 
+      { showPostTypes ? 
+        ( 
+          <>
+            { user?.activity != undefined && user?.activity.posts.length > 0 && 
+              user?.activity.posts.map((post: Partial<Post> | any) => { 
+                return ( 
+                  <PostCard 
+                    like = { like }
+                    onDeletePost = { handleDeletePost }
+                    onEditPost = { handleEditPost }
+                    key = { Date.now() }
+                    dev = { user._id === session?.user?.id }
+                    post = { post }
+                  /> 
+                )
+              })
+            } 
+          </> 
+        ) : 
+        ( 
+          <>
+          </> 
+        )
+      }
       </>
     </div>
   )

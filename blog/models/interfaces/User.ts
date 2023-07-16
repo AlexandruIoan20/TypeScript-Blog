@@ -1,10 +1,12 @@
 import { Schema, Document } from "mongoose";
 import { Post } from "./Post";
+import { Todo } from '../interfaces/Todo'; 
 
 interface ActivityInterface { 
     posts: Schema.Types.ObjectId [] | Post [] | Partial<Post> [], 
     likesCount: number, 
     commentsCount: number, 
+    todos: Partial <Todo> [] | string
 }
 
 export interface User extends Document { 
@@ -26,5 +28,6 @@ export const initialUser: Partial<User> = {
         posts: [], 
         likesCount: 0, 
         commentsCount: 0, 
+        todos: [],
     }
 }
