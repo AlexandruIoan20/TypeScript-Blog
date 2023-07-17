@@ -146,7 +146,6 @@ const ListForm = ({ todo, setTodo, listLength }: Props) => {
         <label className = 'input_label'>
             <>
                 <span className='mx-4 text-base my-0.5 font-medium font-satoshi'> Add new tasks here </span>
-                <pre> { JSON.stringify(inputEls)  }</pre>
                 { 
                     inputEls.map((x, index) => { 
                         const text = todo.list === undefined ? "" : todo.list[index] === undefined ? "" : todo.list[index].text 

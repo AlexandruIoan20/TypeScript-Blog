@@ -3,7 +3,7 @@ import User from './user';
 
 const listItemSchema = new Schema({ 
     text: { 
-        type: string, 
+        type: String, 
         required: [ true, 'Text is required'], 
     }, 
     done: { 
@@ -14,11 +14,11 @@ const listItemSchema = new Schema({
 
 const ToDoSchema = new Schema({ 
     title: { 
-        type: string,
+        type: String,
         required: [ true, 'Title is required'], 
     }, 
     description: { 
-        type: string, 
+        type: String, 
         required: [ true, 'Description is required'], 
     },
     creator: { 

@@ -43,6 +43,15 @@ const TodoForm = ({ type, todo, submitting, handleSubmit, setTodo }: Props ) => 
           setTodo = { setTodo }
           listLength = { todo.list?.length || 0 }
         /> 
+
+        <div className = 'flex justify-center'>
+          <button type = 'submit' 
+            className = 'bg-dark-purple text-white px-4 py-2 rounded-xl transition-all duration-500 hover:scale-125 hover:rounded-full'
+          > { 
+            submitting ? `${type} To Do...`  : `${type} To Do`
+          } </button>
+        </div>
+
       </form>
     </section>
   )
