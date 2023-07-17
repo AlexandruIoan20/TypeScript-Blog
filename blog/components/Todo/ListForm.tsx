@@ -70,6 +70,8 @@ const ListForm = ({ todo, setTodo, listLength }: Props) => {
             updateInputs.push(false); 
             setInputEls(updateInputs); 
         }
+
+        console.log({ todo }); 
     }
 
     const editElement = (text: string, index: number) => { 
