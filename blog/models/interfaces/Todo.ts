@@ -11,7 +11,7 @@ export interface Todo extends Document {
     title: string, 
     description: string, 
     creator: Schema.Types.ObjectId | Partial<User> | string , 
-    list: listItemInterface
+    list: listItemInterface []
 }; 
 
 export const initialTodo: Partial<Todo>  = {
@@ -19,8 +19,5 @@ export const initialTodo: Partial<Todo>  = {
     title: "", 
     description: "",
     creator: "", 
-    list: { 
-        text: "", 
-        done: false, 
-    }
+    list: []
 }
