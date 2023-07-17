@@ -1,5 +1,4 @@
-import { Schema, models, model } from "mongoose";
-import User from './user';
+import { Schema, models, model } from 'mongoose'; 
 
 const listItemSchema = new Schema({ 
     text: { 

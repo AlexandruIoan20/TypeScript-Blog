@@ -1,6 +1,6 @@
 'use client'; 
 
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { initialUser, User } from '@/models/interfaces/User';
 import { Post } from '@/models/interfaces/Post';
 import GradesList from './Grade';
@@ -10,7 +10,6 @@ import { Todo as TodoInterface } from '@/models/interfaces/Todo';
 import TodoCard from './Todo/TodoCard';
 
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
 import Link from 'next/link';
 
 interface Props { 
@@ -56,7 +55,7 @@ const DeveloperArea = ({ onShowStats }: { onShowStats: () => void }) => {
         <ul className='flex flex-row'>
           <DeveloperButton name = { 'View Stats' } executeFunction = { onShowStats }  /> 
           <Link href = '/create-post' className = { BUTTON_GENERAL_CLASSNAME }> Create Post </Link>
-          <Link href = '/create-todo' className = { BUTTON_GENERAL_CLASSNAME }> Creater To Do</Link>
+          <Link href = '/create-todo' className = { BUTTON_GENERAL_CLASSNAME }> Create To Do</Link>
         </ul> 
     </div>
   )
@@ -89,21 +88,67 @@ const DeveloperArea = ({ onShowStats }: { onShowStats: () => void }) => {
 const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile, showPostTypes, setShowPostTypes, grades }: Props) => {
   const { data: session } = useSession(); 
   const [ showStats, setShowStats ] = useState<boolean>(false); 
+  const [ todos, setTodos ] = useState <Partial<TodoInterface> []>([]); 
+  const [ checkForNoTodos, setCheckForNoTodos ] = useState <boolean> (false);  
 
+  useEffect( () => { //get todo lists data the first time you click the button
+    const getTodoData = async () => { 
+      const response = await fetch(`/api/users/${session?.user?.id}/todos`); 
+      const todoResponse = await response.json(); 
+
+      if(todoResponse.length === 0) { 
+        setCheckForNoTodos(true); //it will show a button to create your fist to do list
+      }
+
+      console.log(todoResponse[0].activity.todos); 
+
+      setTodos(todoResponse[0].activity.todos); 
+    }
+    if(!showPostTypes && todos.length == 0) { 
+      getTodoData(); 
+    }
+  }, [showPostTypes])
 
   const like = () => { 
 
   }
 
-  const handleShowStats = () => { 
+  const handleShowStats = () => { // show stats like number of comments, of likes and of posts 
     setShowStats((x) => !x); 
   }
 
-  const handleCancel = () => { 
+  const handleCancel = () => { // close button for stats interface 
     setShowStats(false); 
   }
 
-  return (
+  const handleDeleteTodo = async (index: number) => { //Detele a todo list card completely; 
+    try { 
+      const response = await fetch(`/api/users/${session?.user?.id}/todos`, { 
+        method: "DELETE", 
+        mode: "cors", 
+        body: JSON.stringify({ deletedIndex: index }), 
+        headers: { 
+          'Content-Type': "application/json"
+        }
+      }); //DELETE call for the database
+
+      let newTodos = []; 
+      for(let i = 0; i < todos.length; i++) { 
+        if(i != index) { 
+          newTodos.push(todos[i]); 
+        }
+      }; //remove the front end card
+
+      setTodos(newTodos); 
+
+      if(response.ok) { 
+        return; 
+      }
+    } catch (err) { 
+      console.log(err); 
+    }
+  }
+  return ( 
     <div>
       <>
       <div className='inline-flex w-screen flex-row'>
@@ -164,6 +209,25 @@ const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile,
         ) : 
         ( 
           <>
+              { todos.length === 0 && !checkForNoTodos && 
+                <p>Loading...</p>
+              }
+
+              { todos.length === 0 && checkForNoTodos && 
+                <div>
+                  <p> You don't have a to do list yet</p>
+                  <Link href = { `/create-todo` } className = "default_button"> Create Your First To Do List</Link>
+                </div>
+              }
+
+              { todos.length > 0  && 
+                todos.map(todo => { 
+                  return <TodoCard  
+                    todo = { todo }
+                    handleDeleteTodo = { () => { handleDeleteTodo(todos.indexOf(todo))}} 
+                    /> 
+                })
+              }
           </> 
         )
       }
