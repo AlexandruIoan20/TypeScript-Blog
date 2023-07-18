@@ -5,7 +5,7 @@ import { connectToDB } from '../../../../../utils/database';
 export const GET = async(req, { params }) => { 
     try { 
         await connectToDB(); 
-        const userTodos = await User.find({ _id: params.id}, { 'activity.todos': 1}).populate('activity.todos'); 
+        const userTodos = await User.find({ _id: params.id }, { 'activity.todos': 1}).populate('activity.todos'); 
 
         return new Response(JSON.stringify(userTodos), { status: 200 }); 
     } catch (err) { 

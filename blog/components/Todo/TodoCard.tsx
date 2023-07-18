@@ -27,7 +27,6 @@ const TodoCard = ({ todo, handleDeleteTodo }: Props) => {
     setFinishedTasks(fTasks); 
   }, [])
   return (
-    <Link href = {`/users/${session?.user?.id}/todos/${todo._id}`} >
         <article className = 'bg-slate-200 my-4 mx-8 p-4 rounded-xl hover:bg-slate-400 transition-all duration-300'>
           <p className = 'text-xl font-satoshi'> { todo.title } </p>
           { todo.list != undefined &&
@@ -37,9 +36,12 @@ const TodoCard = ({ todo, handleDeleteTodo }: Props) => {
 
           <div>
             <RiDeleteBin7Line onClick = { handleDeleteTodo } />
+            <Link href = { `/users/${session?.user?.id}/todos/${todo._id}/edit`}> <BsPencil /> </Link>
           </div>
+          <Link href = {`/users/${session?.user?.id}/todos/${todo._id}`} >
+            View
+          </Link>
       </article>
-    </Link>
   )
 }
 

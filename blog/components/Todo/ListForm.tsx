@@ -5,7 +5,6 @@ import {  Todo as  TodoInterface } from '../../models/interfaces/Todo';
 import { InputElement, EditInputElement } from '../Inputs/Inputs';
 import { BsPencil } from 'react-icons/bs'; 
 import { RiDeleteBin7Line } from 'react-icons/ri';
-import { MdOutlineDownloadDone } from 'react-icons/md'; 
 
 interface Props { 
     todo: Partial<TodoInterface> 
@@ -41,7 +40,7 @@ const ListForm = ({ todo, setTodo, listLength }: Props) => {
         let updateEls = []; 
         const length = todo.list?.length || 0; 
         for(let i = 0; i < length; i++) { 
-            updateEls.push(true); 
+            updateEls.push(false); 
         }
 
         setInputEls(updateEls); 
