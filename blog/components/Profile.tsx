@@ -8,6 +8,7 @@ import Alert from './Alert';
 import PostCard from './PostCard';
 import { Todo as TodoInterface } from '@/models/interfaces/Todo';
 import TodoCard from './Todo/TodoCard';
+import { useRouter } from 'next/navigation';
 
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -21,7 +22,8 @@ interface Props {
   grades: string [], 
   children?: React.ReactNode,
   setShowPostTypes: React.Dispatch<React.SetStateAction<boolean>>, 
-  showPostTypes: boolean
+  showPostTypes: boolean, 
+  isOwner: boolean
 }
 
 interface DeveloperProps { 
@@ -83,13 +85,73 @@ const DeveloperArea = ({ onShowStats }: { onShowStats: () => void }) => {
       </section>
     )
 }
-  
 
-const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile, showPostTypes, setShowPostTypes, grades }: Props) => {
+const GradesSet = ({ id }: { id: string }) => { 
+  const router = useRouter(); 
+  const setGrade = async (grade: string) => { 
+    try { 
+      const response = await fetch(`/api/users/${id}/promote`, { 
+        method: "PATCH", 
+        mode: "cors", 
+        body: JSON.stringify({ grade }), 
+        headers: { 
+          'Content-Type': "application/json", 
+        }
+      }); //API call 
+
+      if(response.ok) { 
+        return; 
+      }
+
+      router.push(`/users/${id}`); 
+    } catch(err) { 
+      console.log(err); 
+    }
+  }
+  return ( 
+    <>
+      <button className = 'default_button' onClick = { () => { setGrade('Member')}}> Set Member</button>
+      <button className = 'default_button' onClick = { () => { setGrade('Admin')}}> Set Admin </button>
+      <button className = 'default_button' onClick = { () => { setGrade('Owner')}}> Set Owner </button>
+    </>
+  )
+}
+  
+const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile, showPostTypes, setShowPostTypes, isOwner, grades }: Props) => {
+  const router = useRouter(); 
   const { data: session } = useSession(); 
+
   const [ showStats, setShowStats ] = useState<boolean>(false); 
   const [ todos, setTodos ] = useState <Partial<TodoInterface> []>([]); 
   const [ checkForNoTodos, setCheckForNoTodos ] = useState <boolean> (false);  
+
+  const getMemberGrade = async () => { 
+    try { 
+      const response = await fetch(`api/users/${session?.user?.id}/promote`, { 
+        method: "PATCH", 
+        mode: "cors", 
+        body: JSON.stringify({ grade: "Member "}), 
+        headers: { 
+          'Content-Type': "application/json", 
+        }
+      }); //API call 
+
+      if(response.ok) { 
+        router.push(`/users/${session?.user?.id}`); 
+        return; 
+      }
+    } catch(err) { 
+      console.log(err); 
+    }
+  }
+
+  const checkForGrades = async () => { 
+    let likesCount = user.activity?.likesCount || 0; 
+    let  commentsCount = user.activity?.commentsCount  || 0; 
+    if(commentsCount == 0 && likesCount == 0) { 
+      getMemberGrade(); 
+    }; 
+  }
 
   useEffect( () => { //get todo lists data the first time you click the button
     const getTodoData = async () => { 
@@ -107,6 +169,8 @@ const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile,
     if(!showPostTypes && todos.length == 0) { 
       getTodoData(); 
     }
+
+    checkForGrades(); 
   }, [showPostTypes])
 
   const like = () => { 
@@ -158,13 +222,16 @@ const Profile = ({ name, user, handleDeletePost, handleEditPost, checkMyProfile,
             <DeveloperArea onShowStats = { handleShowStats } /> 
         } 
       </div>
-
       <article className='px-5 flex flex-row gap-x-8'>
         { user != initialUser && 
           <GradesList gradesArray={grades}/>
         }
       </article>
       <hr className='my-2 mx-10'/>
+
+      { isOwner && 
+        <GradesSet id = { user._id === undefined ? "" : user._id?.toString() } /> 
+      }
 
       { session?.user?.id === user._id && 
           <ChangerMenu showPostTypes = { showPostTypes } setShowPostTypes = { setShowPostTypes } /> 

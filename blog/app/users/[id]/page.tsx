@@ -17,6 +17,7 @@ const ProfilePage = () => {
     const [ checkMyProfile, setCheckMyProfile ] = useState <boolean> (false); 
     const [ userPosts, setUserPosts ] = useState <Partial<Post> []> ([]); 
     const [ showPostTypes, setShowPostTypes ] = useState <boolean> (true) //true for posts and false for todo lists
+    const [ isOwner, setIsOwner ] = useState <boolean> (false); 
 
   useEffect( () => { 
     console.log(user); 
@@ -26,9 +27,20 @@ const ProfilePage = () => {
         const response = await fetch(`/api${pathname}`); 
         const userResponse = await response.json();     
   
-        setUser(userResponse); 
-        setGrades(userResponse.status); 
-        setUserPosts(userResponse.activity.posts); 
+        setUser(userResponse.user); //set the user 
+
+        console.log(userResponse.owner); 
+        const length = userResponse.owner.length || 0; 
+
+        for(let i = 0; i < length; i++) { 
+          if(userResponse.owner[i]._id === session?.user?.id) { 
+            setIsOwner(true); 
+            i = length; 
+          }
+        }
+          setIsOwner(true) // check for administration permissions 
+        setGrades(userResponse.user.status); 
+        setUserPosts(userResponse.user.activity.posts); 
   
         // Check if it is my account
         const id = pathname.split('/')[2]; 
@@ -80,6 +92,7 @@ const ProfilePage = () => {
               grades = { grades }
               showPostTypes = { showPostTypes }
               setShowPostTypes = { setShowPostTypes }
+              isOwner = { isOwner }
             />
           ) 
           : 

@@ -11,6 +11,9 @@ export const GET = async(request, { params }) => {
         const user = await User.findOne({ _id: id })
         .populate('activity.posts')
         .exec();
+
+        const owner = await User.find({ status : { $in: ['Owner']}}, { _id: 1}); 
+        console.log(owner); 
   
         console.log(user);
 
@@ -18,7 +21,7 @@ export const GET = async(request, { params }) => {
             return new Response("User not found", { status: 404}); 
         }
     
-        return new Response(JSON.stringify(user), { status: 200})
+        return new Response(JSON.stringify({ user, owner }), { status: 200})
     } catch (err) { 
         console.log(err); 
         return new Response(`Something went wrong on this page: ${err}`, { status: 500 }); 
