@@ -1,7 +1,7 @@
 import { Schema, Document } from 'mongoose'; 
 import { User } from "../interfaces/User"; 
 
-interface listItemInterface { 
+export interface listItemInterface { 
     text: string, 
     done: boolean 
 }; 

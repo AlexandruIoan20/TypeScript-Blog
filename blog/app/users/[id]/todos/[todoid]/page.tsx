@@ -37,7 +37,38 @@ const TodoPage = () => {
     }; 
 
     getTodoData(); 
-  }, [])
+  }, []); 
+
+  const markDone = async (id: string, itemIndex: number) => {
+    try { 
+      const response = await fetch(`/api/users/${session?.user?.id}/todos/${id}/done`, { 
+        method: "PATCH", 
+        mode: "cors", 
+        body: JSON.stringify({ itemIndex }),
+        headers: { 
+          'Content-Type': "application/json", 
+        }
+      }); 
+
+      let updateList = todo.list || []; 
+      let length = updateList.length || 0; 
+
+      for(let i = 0; i < length; i++) { 
+        if(i === itemIndex) { 
+          updateList[i].done = !updateList[i].done; 
+        }
+      }
+
+      setTodo({ ...todo, list: updateList } )
+      console.log({ updateList }); 
+
+      if(response.ok) { 
+        return; 
+      }
+    } catch(err) { 
+      console.log(err); 
+    }
+  }
   return (
     <section>
       { loading && 
@@ -45,7 +76,7 @@ const TodoPage = () => {
       }
 
       { !loading &&
-        <Todo />
+        <Todo todo = { todo } markDone = { markDone } />
       }
     </section>
   )
